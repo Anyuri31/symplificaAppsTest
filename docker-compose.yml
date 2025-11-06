@@ -18,7 +18,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - test_postgress_volume:/var/lib/postgresql/data
+      - test_postgress_volume:/var/lib/postgresql
 
   test_api_container:
     build: ./test-api
