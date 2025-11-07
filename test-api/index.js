@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const { sequelize, Task } = require("./sequelize/models");
+const { getAllTasks, createTask, deleteTask } = require("./taskService"); // importamos service
 const app = express();
 const PORT = 4000;
 
@@ -16,7 +17,7 @@ app.get("/", async (req, res) => {
 // ⚠️ Bug: no maneja timeouts ni validaciones
 app.get("/tasks", async (req, res) => {
   try {
-    const tasks = await Task.findAll();
+    const tasks = await getAllTasks();
     res.json(tasks);
   } catch (error) {
     res.status(500).json({ error: "Error al obtener tareas" });
@@ -27,7 +28,7 @@ app.get("/tasks", async (req, res) => {
 app.post("/tasks", async (req, res) => {
   try {
     const { title, description, completed } = req.body;
-    const task = await Task.create({ title, description, completed });
+    const task = await createTask({ title, description, completed });
     res.status(201).json(task);
   } catch (error) {
     res.status(500).json({ error: "Error creando tarea" });
@@ -38,7 +39,7 @@ app.post("/tasks", async (req, res) => {
 app.delete("/tasks/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    await Task.destroy({ where: { id } });
+    await deleteTask(id);
     res.json({ message: "Task deleted" });
   } catch (error) {
     res.status(500).json({ error: "Error eliminando tarea" });
